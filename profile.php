@@ -520,8 +520,6 @@ $show_password_form = isset($_POST['change_password']) && empty($success);
   </div>
 
   <script>
-    // Initialize Lucide icons
-    lucide.createIcons();
 
     document.addEventListener('DOMContentLoaded', function () {
       // DOM Elements
@@ -640,6 +638,42 @@ $show_password_form = isset($_POST['change_password']) && empty($success);
           this.style.cursor = 'not-allowed';
         });
       }
+
+
+      // Get the full name input element
+  const fullNameInput = document.getElementById('fullName');
+  
+  // Create error message element
+  const errorElement = document.createElement('p');
+  errorElement.className = 'text-sm text-red-500 mt-1 flex items-center';
+  errorElement.innerHTML = `
+    <i data-lucide="alert-circle" class="w-4 h-4 mr-1"></i>
+    <span>Integers are not allowed in the full name</span>
+  `;
+  errorElement.style.display = 'none';
+  
+  // Insert error element after the input field
+  fullNameInput.parentNode.insertBefore(errorElement, fullNameInput.nextSibling);
+  
+  // Add input event listener for real-time validation
+  fullNameInput.addEventListener('input', function(e) {
+    const value = e.target.value;
+    
+    // Check if the input contains any digits
+    if (/\d/.test(value)) {
+      errorElement.style.display = 'flex';
+      fullNameInput.classList.add('border-red-300');
+      fullNameInput.classList.remove('border-gray-300');
+    } else {
+      errorElement.style.display = 'none';
+      fullNameInput.classList.remove('border-red-300');
+      fullNameInput.classList.add('border-gray-300');
+    }
+  });
+
+  
+    // Initialize Lucide icons
+    lucide.createIcons();
     });
   </script>
 </body>
