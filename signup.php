@@ -265,17 +265,85 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script>
         // Initialize Lucide icons
-        lucide.createIcons();
+      //  lucide.createIcons();
         
         // Form validation
+        // document.getElementById('registerForm').addEventListener('submit', function(e) {
+        //     if (!document.getElementById('agree-terms').checked) {
+        //         e.preventDefault();
+        //         alert('You must agree to the terms of service');
+        //         return false;
+        //     }
+        //     return true;
+        // });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
         document.getElementById('registerForm').addEventListener('submit', function(e) {
-            if (!document.getElementById('agree-terms').checked) {
-                e.preventDefault();
-                alert('You must agree to the terms of service');
-                return false;
+            e.preventDefault();
+            
+            // Clear previous errors
+            const existingError = document.querySelector('.bg-red-100');
+            if (existingError) existingError.remove();
+
+            let errors = [];
+
+            // Name validation (letters, spaces, and apostrophes only)
+            const name = document.querySelector('[name="name"]').value.trim();
+            if (!/^[A-Za-z\s']+$/.test(name)) {
+                errors.push("Name should contain only letters, spaces, and apostrophes");
             }
-            return true;
+
+            // Username validation (alphanumeric with both letters and numbers)
+            const username = document.querySelector('[name="username"]').value.trim();
+            if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(username)) {
+                errors.push("Username must contain both letters and numbers (no special characters)");
+            }
+
+            // Email validation
+            const email = document.querySelector('[name="email"]').value.trim();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+                errors.push("Please enter a valid email address");
+            }
+
+            // Password validation
+            const password = document.querySelector('[name="password"]').value;
+            if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/.test(password)) {
+                errors.push("Password must be: 6+ characters, 1 letter, 1 number, and 1 special character");
+            }
+
+            // Security answer validation
+            const securityAnswer = document.querySelector('[name="security_answer"]').value.trim();
+            if (securityAnswer === '') {
+                errors.push("Security answer is required");
+            }
+
+            // Terms agreement check
+            const agreeTerms = document.getElementById('agree-terms').checked;
+            if (!agreeTerms) {
+                errors.push("You must agree to the terms of service");
+            }
+
+            // Display errors or submit
+            if (errors.length > 0) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'bg-red-100 text-red-700 p-3 rounded-lg mb-4';
+                errorDiv.innerHTML = errors.map(error => `
+                    <p class="flex items-center">
+                        <i data-lucide="alert-circle" class="h-5 w-5 mr-2"></i>
+                        ${error}
+                    </p>
+                `).join('');
+
+                this.parentNode.insertBefore(errorDiv, this);
+                lucide.createIcons();
+            } else {
+                this.submit();
+            }
         });
+ 
+        
     </script>
 </body>
 </html>
